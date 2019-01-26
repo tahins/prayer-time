@@ -1,1 +1,3 @@
-{}
+{
+  "prayerTimesToShow": ["fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha"]
+}
