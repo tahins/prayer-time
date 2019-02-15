@@ -1,7 +1,8 @@
 export default class PrayerTime {
-  constructor(name, time, isCurrent = false, timeUntilNextPrayer = null) {
+  constructor(name, time, next, isCurrent = false, timeUntilNextPrayer = null) {
     this.name = name;
     this.time = time;
+    this.next = next;
     this.isCurrent = isCurrent;
     this.timeUntilNextPrayer = timeUntilNextPrayer;
   }

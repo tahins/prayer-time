@@ -11,7 +11,7 @@ function PrayerTimeRow(props) {
       <div className="prayer-time">{props.time}</div>
       {props.isCurrent ? (
         <div className="prayer-time-remaining">
-          Time until next prayer: {props.timeUntilNextPrayer}
+          Time until {props.next}: {props.timeUntilNextPrayer}
         </div>
       ) : null}
     </li>

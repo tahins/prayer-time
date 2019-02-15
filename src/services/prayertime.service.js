@@ -36,12 +36,14 @@ export default class PrayerTimeService {
     const formattedTime = Adhan.Date.formattedTime;
     const currentTimeIndex = this._prayerTimes.currentPrayer();
     const nextTimeIndex = this._prayerTimes.nextPrayer();
-    // this._prayerTimes.nextPrayer() !== 6 ? this._prayerTimes.nextPrayer() : 0;
 
     let prayerTimes = {};
-    this._timeKeys.forEach(key => {
+    this._timeKeys.forEach((key, index) => {
       let name = UtilService.capitalize(key);
       let time = this._prayerTimes[key];
+      let nextIndex = index + 1;
+      nextIndex = nextIndex !== this._timeKeys.length ? nextIndex : 0;
+      let nextName = UtilService.capitalize(this._timeKeys[nextIndex]);
 
       if (key !== "midnight") {
         time = formattedTime(
@@ -51,17 +53,13 @@ export default class PrayerTimeService {
         );
       }
 
-      prayerTimes[key] = new PrayerTime(name, time);
+      prayerTimes[key] = new PrayerTime(name, time, nextName);
     });
 
-    // if (currentTimeIndex !== 6) {
     const currentTimeKey = this._timeKeys[currentTimeIndex];
     const timeUntilNextPrayer = this._getTimeUntilNextPrayer(nextTimeIndex);
     prayerTimes[currentTimeKey].setCurrent(true);
     prayerTimes[currentTimeKey].setTimeUntilNextPrayer(timeUntilNextPrayer);
-    // }
-
-    console.log(prayerTimes);
 
     return prayerTimes;
   }
@@ -75,9 +73,12 @@ export default class PrayerTimeService {
   _getMidnight() {
     let sunset = moment(
       getSunset(this._coordinates.latitude, this._coordinates.longitude)
-    )
-      .subtract(this._date.getTimezoneOffset(), "minutes")
-      .toDate();
+    ).subtract(this._date.getTimezoneOffset(), "minutes");
+    sunset =
+      sunset.second() || sunset.millisecond()
+        ? sunset.add(1, "minute").startOf("minute")
+        : sunset.startOf("minute");
+    sunset = sunset.toDate();
 
     let fajr = this._prayerTimes["fajr"];
     let midnightOffset = (fajr.getTime() - sunset.getTime()) / 2;
