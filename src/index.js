@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import ReactDOM from "react-dom";
 import adhan from "adhan";
 import Calendar from "./components/Calendar/Calendar.js";
 import Location from "./components/Location/Location.js";
 import PrayerTimeTable from "./components/PrayerTimeTable/PrayerTimeTable.js";
+import CoordsContext from "./CoordsContext";
 
 import "./styles.css";
 //https://cdn.dribbble.com/users/981797/screenshots/2743209/iman-time.jpg
@@ -11,22 +12,21 @@ import "./styles.css";
 //https://najens.github.io/weather-icons-react/
 
 function App() {
-  // var date = new Date();
-  // var coordinates = new adhan.Coordinates(35.78056, -78.6389);
-  // var params = adhan.CalculationMethod.MuslimWorldLeague();
-  // params.madhab = adhan.Madhab.Hanafi;
-  // var prayerTimes = new adhan.PrayerTimes(coordinates, date, params);
-  // var formattedTime = adhan.Date.formattedTime;
-  // var prayerTime = formattedTime(prayerTimes.fajr, -4);
+  const [coords, setCoords] = useState({
+    latitude: 0,
+    longitude: 0
+  });
 
   return (
-    <div className="App">
-      <Calendar />
-      <Location />
-      <br />
-      <br />
-      <PrayerTimeTable />
-    </div>
+    <CoordsContext.Provider value={{ coords, setCoords }}>
+      <div className="App">
+        <Calendar />
+        <Location />
+        <br />
+        <br />
+        <PrayerTimeTable />
+      </div>
+    </CoordsContext.Provider>
   );
 }
 

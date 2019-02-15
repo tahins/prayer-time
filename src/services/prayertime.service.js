@@ -1,40 +1,26 @@
 import Adhan from "adhan";
+import moment from "moment";
+import { getSunrise, getSunset } from "sunrise-sunset-js";
+import UtilService from "../services/util.service";
+import PrayerTime from "../models/prayerTime.model";
 
-export default class PrayerTime {
+export default class PrayerTimeService {
   constructor(latitude, longitude) {
-    this.date = new Date();
-    this.coordinates = new Adhan.Coordinates(latitude, longitude);
-    this.params = this._getDefaultParams();
+    this._date = new Date();
+    this._coordinates = new Adhan.Coordinates(latitude, longitude);
+    this._params = this._getDefaultParams();
 
-    this.prayerTimes = new Adhan.PrayerTimes(
-      this.coordinates,
-      this.date,
-      this.params
+    this._prayerTimes = new Adhan.PrayerTimes(
+      this._coordinates,
+      this._date,
+      this._params
     );
-  }
 
-  _getDefaultParams() {
-    let params = Adhan.CalculationMethod.UmmAlQura();
-    params.madhab = Adhan.Madhab.Shafi;
-    return params;
-  }
+    this._prayerTimes["midnight"] = this._getMidnight();
 
-  getPrayerTimes(date = new Date(), hourMode) {
-    const UTCTimezoneOffsetInHours = date.getTimezoneOffset() / -60;
-    const formattedTime = Adhan.Date.formattedTime;
-    const currentTimeIndex = this.prayerTimes.currentPrayer();
-    // const todayIshaTime = this.prayerTimes.isha;
-    // const tomorrowFajrTime = this.prayerTimes.fajr;
-    // tomorrowFajrTime.setDate(tomorrowFajrTime.getDate() + 1);
-    // const tillMidnight = (tomorrowFajrTime - todayIshaTime) * 0.5;
-    // const midnight = new Date(todayIshaTime.getTime() + tillMidnight);
-    // console.log(midnight);
-    // const nextTimeIndex = this.prayerTimes.nextPrayer();
-    // console.log(this.prayerTimes);
-    // console.log(this.prayerTimes.timeForPrayer());
-    // console.log(currentTimeIndex);
-    // console.log(nextTimeIndex);
-    const timeKeys = [
+    // console.log(this._prayerTimes);
+
+    this._timeKeys = [
       "fajr",
       "sunrise",
       "dhuhr",
@@ -43,64 +29,80 @@ export default class PrayerTime {
       "isha",
       "midnight"
     ];
+  }
 
-    let prayerTimes = {
-      fajr: {
-        name: "Fajr",
-        time: formattedTime(
-          this.prayerTimes.fajr,
+  getPrayerTimes(date = new Date(), hourMode) {
+    const UTCTimezoneOffsetInHours = date.getTimezoneOffset() / -60;
+    const formattedTime = Adhan.Date.formattedTime;
+    const currentTimeIndex = this._prayerTimes.currentPrayer();
+    const nextTimeIndex = this._prayerTimes.nextPrayer();
+    // this._prayerTimes.nextPrayer() !== 6 ? this._prayerTimes.nextPrayer() : 0;
+
+    let prayerTimes = {};
+    this._timeKeys.forEach(key => {
+      let name = UtilService.capitalize(key);
+      let time = this._prayerTimes[key];
+
+      if (key !== "midnight") {
+        time = formattedTime(
+          this._prayerTimes[key],
           UTCTimezoneOffsetInHours,
           hourMode
-        )
-      },
-      sunrise: {
-        name: "Sunrise",
-        time: formattedTime(
-          this.prayerTimes.sunrise,
-          UTCTimezoneOffsetInHours,
-          hourMode
-        )
-      },
-      dhuhr: {
-        name: "Dhuhr",
-        time: formattedTime(
-          this.prayerTimes.dhuhr,
-          UTCTimezoneOffsetInHours,
-          hourMode
-        )
-      },
-      asr: {
-        name: "Asr",
-        time: formattedTime(
-          this.prayerTimes.asr,
-          UTCTimezoneOffsetInHours,
-          hourMode
-        )
-      },
-      maghrib: {
-        name: "Maghrib",
-        time: formattedTime(
-          this.prayerTimes.maghrib,
-          UTCTimezoneOffsetInHours,
-          hourMode
-        )
-      },
-      isha: {
-        name: "Isha",
-        time: formattedTime(
-          this.prayerTimes.isha,
-          UTCTimezoneOffsetInHours,
-          hourMode
-        )
-      },
-      midnight: {
-        name: "Midnight",
-        time: ""
+        );
       }
-    };
 
-    prayerTimes[timeKeys[currentTimeIndex]].isCurrent = true;
+      prayerTimes[key] = new PrayerTime(name, time);
+    });
+
+    // if (currentTimeIndex !== 6) {
+    const currentTimeKey = this._timeKeys[currentTimeIndex];
+    const timeUntilNextPrayer = this._getTimeUntilNextPrayer(nextTimeIndex);
+    prayerTimes[currentTimeKey].setCurrent(true);
+    prayerTimes[currentTimeKey].setTimeUntilNextPrayer(timeUntilNextPrayer);
+    // }
+
+    console.log(prayerTimes);
 
     return prayerTimes;
+  }
+
+  _getDefaultParams() {
+    let params = Adhan.CalculationMethod.UmmAlQura();
+    params.madhab = Adhan.Madhab.Shafi;
+    return params;
+  }
+
+  _getMidnight() {
+    let sunset = moment(
+      getSunset(this._coordinates.latitude, this._coordinates.longitude)
+    )
+      .subtract(this._date.getTimezoneOffset(), "minutes")
+      .toDate();
+
+    let fajr = this._prayerTimes["fajr"];
+    let midnightOffset = (fajr.getTime() - sunset.getTime()) / 2;
+    let midnight = sunset.getTime() + midnightOffset;
+
+    // console.log(sunset, fajr, new Date(midnight));
+
+    return moment(midnight).format("h:m A");
+  }
+
+  _getTimeUntilNextPrayer(nextTimeIndex) {
+    let currentTime = moment(new Date());
+    let nextPrayerTime = moment(
+      this._prayerTimes[this._timeKeys[nextTimeIndex]]
+    );
+
+    let timeDifference = nextPrayerTime.diff(currentTime, "minutes");
+    let timeDifferenceInHours = parseInt(timeDifference / 60);
+    let timeDifferenceInMinutes = timeDifference % 60;
+    let timeUntilNextPrayer = [];
+    if (timeDifferenceInHours > 0)
+      timeUntilNextPrayer.push(timeDifferenceInHours + " hours");
+    if (timeDifferenceInMinutes > 0)
+      timeUntilNextPrayer.push(timeDifferenceInMinutes + " minutes");
+
+    return timeUntilNextPrayer.join(" ");
   }
 }

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import PrayerTimeRow from "./PrayerTimeRow.js";
-import PrayerTime from "../../services/prayertime.service.js";
+import PrayerTimeService from "../../services/prayertime.service.js";
 import {
   WiDayHaze,
   WiDayCloudy,
@@ -10,13 +10,20 @@ import {
   WiNightAltPartlyCloudy,
   WiNightClear
 } from "weather-icons-react";
+import CoordsContext from "../../CoordsContext";
 import Config from "/config.json";
+
 import "./PrayerTimeTable.css";
 
 function PrayerTimeTable() {
-  const prayerTime = new PrayerTime(23.777176, 90.399452);
-  let prayerTimes = prayerTime.getPrayerTimes();
-  let prayerTimesToShow = Config.prayerTimesToShow.map(timeKey => {
+  const coordsContext = useContext(CoordsContext);
+
+  const prayerTimeService = new PrayerTimeService(
+    coordsContext.coords.latitude,
+    coordsContext.coords.longitude
+  );
+  let prayerTimes = prayerTimeService.getPrayerTimes();
+  let prayerTimesToShow = Config.prayerTimesToShow.map((timeKey, index) => {
     let prayerTime = prayerTimes[timeKey];
     prayerTime.icon = getPrayerTimeIcon(timeKey, 38);
     return prayerTimes[timeKey];
