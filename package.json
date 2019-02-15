@@ -6,8 +6,12 @@
   "main": "src/index.js",
   "dependencies": {
     "adhan": "3.0.0",
-    "react": "16.5.2",
-    "react-dom": "16.5.2",
+    "axios": "0.18.0",
+    "geolocator": "2.1.5",
+    "hijrah-date": "1.0.3",
+    "moment": "2.24.0",
+    "react": "16.8.1",
+    "react-dom": "16.8.1",
     "react-scripts": "2.0.3",
     "weather-icons-react": "latest"
   },
