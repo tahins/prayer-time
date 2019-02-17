@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import Calendar from "./components/Calendar/Calendar.js";
-import Location from "./components/Location/Location.js";
-import PrayerTimeTable from "./components/PrayerTimeTable/PrayerTimeTable.js";
+import Calendar from "./Components/Calendar/Calendar.js";
+import Location from "./Components/Location/Location.js";
+import PrayerTimeTable from "./Components/PrayerTimeTable/PrayerTimeTable.js";
 import CoordsContext from "./CoordsContext";
+
+import * as serviceWorker from './serviceWorker';
 
 import "./styles.css";
 

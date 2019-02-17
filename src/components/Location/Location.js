@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import LocationService from "../../services/location.service";
+import LocationService from "../../Services/location.service";
 import CoordsContext from "../../CoordsContext";
 
 function Location() {

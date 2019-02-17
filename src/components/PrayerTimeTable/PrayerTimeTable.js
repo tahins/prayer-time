@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import PrayerTimeRow from "./PrayerTimeRow.js";
-import PrayerTimeService from "../../services/prayertime.service.js";
+import PrayerTimeService from "../../Services/prayertime.service.js";
 import {
   WiDayHaze,
   WiDayCloudy,
