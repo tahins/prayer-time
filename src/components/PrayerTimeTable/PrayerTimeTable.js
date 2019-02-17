@@ -11,7 +11,7 @@ import {
   WiNightClear
 } from "weather-icons-react";
 import CoordsContext from "../../CoordsContext";
-import Config from "/config.json";
+import AppConfig from "../../AppConfig.json";
 
 import "./PrayerTimeTable.css";
 
@@ -23,7 +23,7 @@ function PrayerTimeTable() {
     coordsContext.coords.longitude
   );
   let prayerTimes = prayerTimeService.getPrayerTimes();
-  let prayerTimesToShow = Config.prayerTimesToShow.map((timeKey, index) => {
+  let prayerTimesToShow = AppConfig.prayerTimesToShow.map((timeKey, index) => {
     let prayerTime = prayerTimes[timeKey];
     prayerTime.icon = getPrayerTimeIcon(timeKey, 38);
     return prayerTimes[timeKey];

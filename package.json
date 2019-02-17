@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "keywords": [],
+  "homepage": "/prayer-time",
   "main": "src/index.js",
   "dependencies": {
     "adhan": "3.0.0",
