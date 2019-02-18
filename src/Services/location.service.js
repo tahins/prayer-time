@@ -6,13 +6,30 @@ export default class LocationService {
       language: "en",
       google: {
         version: "3",
-        key: "AIzaSyAWhJ6BX_6L3RlmW95mqD6mYsmhxlCwEWo"
+        key: process.env.REACT_APP_GOOGLE_API_KEY
       }
     });
   }
 
+  getPosition() {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    };
+
+    return new Promise(function (resolve, reject) {
+      navigator.geolocation.getCurrentPosition(position => {
+        resolve({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        })
+      }, reject, options);
+    });
+  }
+
   getLocation() {
-    var options = {
+    const options = {
       enableHighAccuracy: true,
       fallbackToIP: true,
       addressLookup: true
@@ -20,7 +37,11 @@ export default class LocationService {
 
     return new Promise((resolve, reject) => {
       geolocator.locate(options, (error, location) => {
-        if (error) reject(error);
+        if (error) {
+          reject(error);
+          return;
+        }
+
         resolve({
           city: location.address.city,
           country: location.address.country,

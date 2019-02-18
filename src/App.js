@@ -1,16 +1,28 @@
-import React, { Component } from 'react';
-import PrayerTime from './Components/PrayerTime/PrayerTime';
-import './App.css';
+import React, { useState } from "react";
+import Calendar from "./Components/Calendar/Calendar.js";
+import Location from "./Components/Location/Location.js";
+import PrayerTimeTable from "./Components/PrayerTimeTable/PrayerTimeTable.js";
+import CoordsContext from "./CoordsContext";
 
-class App extends Component {
-  // https://react.semantic-ui.com/modules/sidebar/#examples-transitions
-  render() {
-    return (
+import "./App.css";
+
+function App() {
+  const [coords, setCoords] = useState({
+    latitude: null,
+    longitude: null
+  });
+
+  return (
+    <CoordsContext.Provider value={{ coords, setCoords }}>
       <div className="App">
-        <PrayerTime />
+        <Calendar />
+        <Location />
+        <br />
+        <br />
+        <PrayerTimeTable />
       </div>
-    );
-  }
+    </CoordsContext.Provider>
+  );
 }
 
 export default App;
