@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PrayerTimeRow from "./PrayerTimeRow.js";
 import PrayerTimeService from "../../Services/prayertime.service.js";
 import {
@@ -17,15 +17,12 @@ import "./PrayerTimeTable.css";
 function PrayerTimeTable(props) {
   if (!props.latitude || !props.longitude) return null;
 
-  let prayerTimes = getUpdatedPrayerTimes(props.latitude, props.longitude);
+  const getUpdatedPrayerTimes = getPrayerTimesToDisplay.bind(this, props.latitude, props.longitude);
+  const [prayerTimes, setPrayerTimes] = useState(
+    getUpdatedPrayerTimes()
+  );
 
-  // setInterval(() => {
-  //   setPrayerTimes(getUpdatedPrayerTimes(
-  //     coordsContext.coords.latitude,
-  //     coordsContext.coords.longitude
-  //   ));
-  //   console.log(prayerTimes);
-  // }, 100000);
+  setupUpdatePrayerTimeInEveryMinute(getUpdatedPrayerTimes, setPrayerTimes);
 
   return (
     <ul id="prayerTimeTable">
@@ -36,16 +33,30 @@ function PrayerTimeTable(props) {
   );
 }
 
-function getUpdatedPrayerTimes(latitude, longitude) {
+function setupUpdatePrayerTimeInEveryMinute(getUpdatedPrayerTimes, setPrayerTimes) {
+  const now = new Date();
+  const SECONDS_REMAINING_TILL_THIS_MINUTE = (60 - now.getSeconds()) * 1000;
+  const ONE_SECOND = 60 * 1000;
+
+  setTimeout(() => {
+    setPrayerTimes(getUpdatedPrayerTimes());
+
+    setInterval(() => {
+      setPrayerTimes(getUpdatedPrayerTimes());
+    }, ONE_SECOND);
+  }, SECONDS_REMAINING_TILL_THIS_MINUTE);
+}
+
+function getPrayerTimesToDisplay(latitude, longitude) {
   const prayerTimeService = new PrayerTimeService(latitude, longitude);
   let prayerTimes = prayerTimeService.getPrayerTimes();
-  let prayerTimesToShow = AppConfig.prayerTimesToShow.map((timeKey, index) => {
+  let prayerTimesToDisplay = AppConfig.prayerTimesToShow.map(timeKey => {
     let prayerTime = prayerTimes[timeKey];
     prayerTime.icon = getPrayerTimeIcon(timeKey, 38);
     return prayerTimes[timeKey];
   });
 
-  return prayerTimesToShow;
+  return prayerTimesToDisplay;
 }
 
 function getPrayerTimeIcon(prayerTimeKey, size) {

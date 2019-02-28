@@ -1,28 +1,36 @@
 import React, { useState } from "react";
-import Calendar from "./Components/Calendar/Calendar.js";
-import Location from "./Components/Location/Location.js";
-import PrayerTimeTable from "./Components/PrayerTimeTable/PrayerTimeTable.js";
+import Calendar from "./Components/Calendar/Calendar";
+import Location from "./Components/Location/Location";
+import PrayerTimeTable from "./Components/PrayerTimeTable/PrayerTimeTable";
+import LocalStorageService from "./Services/localstorage.service";
 import CoordsContext from "./CoordsContext";
 
 import "./App.css";
 
 function App() {
-  const [coords, setCoords] = useState({
-    latitude: null,
-    longitude: null
-  });
+  let initialPosition = LocalStorageService.getPosition();
+
+  if (!isPositionSet(initialPosition)) {
+    initialPosition = {
+      latitude: null,
+      longitude: null
+    }
+  }
+
+  const [coords, setCoords] = useState(initialPosition);
 
   return (
-    <CoordsContext.Provider value={{ coords, setCoords }}>
+    <CoordsContext.Provider value={{ coords, setCoords, isPositionSet }}>
       <div className="App">
         <Calendar />
         <Location />
-        <br />
         <br />
         <PrayerTimeTable latitude={coords.latitude} longitude={coords.longitude} />
       </div>
     </CoordsContext.Provider>
   );
 }
+
+const isPositionSet = position => !(!position || !position.latitude || !position.longitude)
 
 export default App;

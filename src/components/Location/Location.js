@@ -1,39 +1,49 @@
 import React, { useState, useContext } from "react";
 import LocationService from "../../Services/location.service";
 import CoordsContext from "../../CoordsContext";
-// import { Icon } from 'react-icons-kit';
-// import { crosshair } from 'react-icons-kit/feather/crosshair';
+import LocationView from "./LocationView";
+import LocalStorageService from "../../Services/localstorage.service";
 
 function Location() {
-  const [location, setLocation] = useState(null);
-  const coordsContext = useContext(CoordsContext);
+  let locationName = LocalStorageService.getLocationName();
+  const [location, setLocation] = useState(locationName);
   const locationService = new LocationService();
+  const coordsContext = useContext(CoordsContext);
+  const isPositionSet = coordsContext.isPositionSet(coordsContext.coords);
 
-  if (!coordsContext.coords.latitude || !coordsContext.coords.longitude) {
-    locationService.getPosition()
-      .then(coords => {
-        coordsContext.setCoords(coords);
-      })
-      .catch((err) => {
-        console.error(err.message);
-      });
-  }
+  const getUserLocation = getUserLocationHandler.bind(this, locationService, coordsContext.setCoords, setLocation);
 
-  if (!location) {
-    locationService.getLocation().then(location => {
-      setLocation(location.city + ", " + location.country);
-      coordsContext.setCoords(location.coords);
+  return <LocationView
+    coords={coordsContext.coords}
+    isPositionSet={isPositionSet}
+    location={location}
+    getUserLocation={getUserLocation}
+  />;
+}
+
+const getUserLocationHandler = (locationService, setCoords, setLocation) => {
+  locationService.getPosition()
+    .then(coords => {
+      setCoords(coords);
+      LocalStorageService.setPosition(coords);
+
+      getUserCityCountryName(locationService, setLocation);
     })
-      .catch((err) => {
-        console.error(err.message);
-      });
-  }
+    .catch(err => {
+      console.error(err.message);
+    });
+}
 
-  return <div id="location">
-    {location}
-
-    {/* <Icon icon={crosshair} size={32} /> */}
-  </div>;
+const getUserCityCountryName = (locationService, setLocation) => {
+  locationService.getLocation()
+    .then(location => {
+      let cityCountryName = location.city + ", " + location.country;
+      setLocation(cityCountryName);
+      LocalStorageService.setLocationName(cityCountryName);
+    })
+    .catch((err) => {
+      console.error(err.message);
+    });
 }
 
 export default Location;

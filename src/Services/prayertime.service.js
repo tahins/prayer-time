@@ -62,11 +62,11 @@ export default class PrayerTimeService {
       nextTimeIndex = (nextTimeIndex + 1) % this._timeKeys.length;
     }
     const currentTimeKey = this._timeKeys[currentTimeIndex];
-    const timeUntilNextPrayerInMinutes = this._getTimeUntilNextPrayerInMinutes(nextTimeIndex);
-    const timeUntilNextPrayerInText = this._getTimeUntilNextPrayerInText(timeUntilNextPrayerInMinutes);
+    const timeUntilNextPrayerInMillis = this._getTimeUntilNextPrayerInMillis(nextTimeIndex);
+    const timeUntilNextPrayerInText = this._getTimeUntilNextPrayerInText(timeUntilNextPrayerInMillis);
 
     prayerTimes[currentTimeKey].setCurrent(true);
-    prayerTimes[currentTimeKey].setTimeUntilNextPrayerInMinutes(timeUntilNextPrayerInMinutes);
+    prayerTimes[currentTimeKey].setTimeUntilNextPrayerInMillis(timeUntilNextPrayerInMillis);
     prayerTimes[currentTimeKey].setTimeUntilNextPrayerInText(timeUntilNextPrayerInText);
 
     return prayerTimes;
@@ -94,22 +94,23 @@ export default class PrayerTimeService {
     return midnight.toDate();
   }
 
-  _getTimeUntilNextPrayerInMinutes(nextTimeIndex) {
+  _getTimeUntilNextPrayerInMillis(nextTimeIndex) {
     let currentTime = moment(new Date());
-    let nextPrayerTime = moment(this._prayerTimes[this._timeKeys[nextTimeIndex]]);
-    let timeDifference = Math.ceil(nextPrayerTime.diff(currentTime, "minutes", true));
+    let nextPrayerTime = moment(this._prayerTimes[this._timeKeys[nextTimeIndex]]).add(1, "minutes");
+    let timeDifference = nextPrayerTime.diff(currentTime);
 
     if (nextTimeIndex === 0 && timeDifference < 0) {
       nextPrayerTime.add(1, "days");
-      timeDifference = Math.ceil(nextPrayerTime.diff(currentTime, "minutes", true));
+      timeDifference = nextPrayerTime.diff(currentTime);
     }
 
     return timeDifference;
   }
 
-  _getTimeUntilNextPrayerInText(timeDifference) {
-    let timeDifferenceInHours = parseInt(timeDifference / 60);
-    let timeDifferenceInMinutes = timeDifference % 60;
+  _getTimeUntilNextPrayerInText(timeDifferenceInMillis) {
+    let duration = moment.duration(timeDifferenceInMillis);
+    let timeDifferenceInHours = duration.hours();
+    let timeDifferenceInMinutes = duration.minutes();
     let timeUntilNextPrayer = [];
     if (timeDifferenceInHours > 0)
       timeUntilNextPrayer.push(UtilService.pluralize(timeDifferenceInHours, "hour"));

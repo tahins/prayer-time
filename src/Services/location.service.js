@@ -20,15 +20,30 @@ export default class LocationService {
 
     return new Promise(function (resolve, reject) {
       navigator.geolocation.getCurrentPosition(position => {
-        resolve({
+        let coords = {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
-        })
+        };
+        console.info("Position fetched", coords);
+        resolve(coords);
       }, reject, options);
     });
   }
 
   getLocation() {
+    return fetch("https://geoip-db.com/json/")
+      .then(response => response.json())
+      .then(function (jsonResponse) {
+        let location = {
+          city: jsonResponse.city,
+          country: jsonResponse.country_name
+        };
+        console.info("Location fetched", location);
+        return location;
+      });
+  }
+
+  _getLocation() {
     const options = {
       enableHighAccuracy: true,
       fallbackToIP: true,

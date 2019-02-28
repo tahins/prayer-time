@@ -1,7 +1,6 @@
 import React from "react";
 
 function PrayerTimeRow(props) {
-  // console.log(props);
   return (
     <li
       id="prayerTimeRow"

@@ -7,5 +7,10 @@
         "maghrib",
         "isha",
         "midnight"
-    ]
+    ],
+    "storagePrefix": "prayertime",
+    "storageKeys": {
+        "position": "position",
+        "locationName": "locationName"
+    }
 }

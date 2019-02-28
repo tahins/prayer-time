@@ -1,6 +1,6 @@
 export default class PrayerTime {
   constructor(name, time, formattedTime, next, isCurrent = false,
-    timeUntilNextPrayerInMinutes = null, timeUntilNextPrayerInText = null) {
+    timeUntilNextPrayerInMillis = null, timeUntilNextPrayerInText = null) {
 
     this.name = name;
     this.time = time;
@@ -8,7 +8,7 @@ export default class PrayerTime {
     this.next = next;
     this.isCurrent = isCurrent;
     this.timeUntilNextPrayerInText = timeUntilNextPrayerInText;
-    this.timeUntilNextPrayerInMinutes = timeUntilNextPrayerInMinutes;
+    this.timeUntilNextPrayerInMillis = timeUntilNextPrayerInMillis;
   }
 
   setCurrent(status) {
@@ -19,8 +19,8 @@ export default class PrayerTime {
     this.timeUntilNextPrayerInText = timeUntilNextPrayerInText;
   }
 
-  setTimeUntilNextPrayerInMinutes(timeUntilNextPrayerInMinutes) {
-    this.timeUntilNextPrayerInMinutes = timeUntilNextPrayerInMinutes;
+  setTimeUntilNextPrayerInMillis(timeUntilNextPrayerInMillis) {
+    this.timeUntilNextPrayerInMillis = timeUntilNextPrayerInMillis;
   }
 
   getTimeUntilNextPrayer() {

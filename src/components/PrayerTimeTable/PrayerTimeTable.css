@@ -63,6 +63,10 @@
   color: var(--current-prayerTime-secondary-text-color);
 }
 
+.current-prayer-time .prayer-name {
+  font-size: 120%;
+}
+
 .prayer-time-remaining {
   margin-top: 10px;
   font-size: var(--secondary-text-font-size);
