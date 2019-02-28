@@ -19,7 +19,7 @@ function App() {
         <Location />
         <br />
         <br />
-        <PrayerTimeTable />
+        <PrayerTimeTable latitude={coords.latitude} longitude={coords.longitude} />
       </div>
     </CoordsContext.Provider>
   );

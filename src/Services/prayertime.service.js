@@ -18,8 +18,6 @@ export default class PrayerTimeService {
 
     this._prayerTimes["midnight"] = this._getMidnight();
 
-    // console.log(this._prayerTimes);
-
     this._timeKeys = [
       "fajr",
       "sunrise",
@@ -31,35 +29,45 @@ export default class PrayerTimeService {
     ];
   }
 
-  getPrayerTimes(date = new Date(), hourMode) {
+  getPrayerTimes(hourMode, date = new Date()) {
     const UTCTimezoneOffsetInHours = date.getTimezoneOffset() / -60;
-    const formattedTime = Adhan.Date.formattedTime;
-    const currentTimeIndex = this._prayerTimes.currentPrayer();
-    const nextTimeIndex = this._prayerTimes.nextPrayer();
+    const adhanFormattedTime = Adhan.Date.formattedTime;
+    let currentTimeIndex = this._prayerTimes.currentPrayer();
+    let nextTimeIndex = this._prayerTimes.nextPrayer();
 
     let prayerTimes = {};
     this._timeKeys.forEach((key, index) => {
       let name = UtilService.capitalize(key);
       let time = this._prayerTimes[key];
+      let formattedTime = "";
       let nextIndex = index + 1;
       nextIndex = nextIndex !== this._timeKeys.length ? nextIndex : 0;
       let nextName = UtilService.capitalize(this._timeKeys[nextIndex]);
 
-      if (key !== "midnight") {
-        time = formattedTime(
-          this._prayerTimes[key],
+      if (key === "midnight") {
+        formattedTime = moment(time).format("hh:mm A");
+      } else {
+        formattedTime = adhanFormattedTime(
+          time,
           UTCTimezoneOffsetInHours,
           hourMode
         );
       }
 
-      prayerTimes[key] = new PrayerTime(name, time, nextName);
+      prayerTimes[key] = new PrayerTime(name, time, formattedTime, nextName);
     });
 
+    if (new Date().getTime() > this._prayerTimes["midnight"].getTime()) {
+      currentTimeIndex = (currentTimeIndex + 1) % this._timeKeys.length;
+      nextTimeIndex = (nextTimeIndex + 1) % this._timeKeys.length;
+    }
     const currentTimeKey = this._timeKeys[currentTimeIndex];
-    const timeUntilNextPrayer = this._getTimeUntilNextPrayer(nextTimeIndex);
+    const timeUntilNextPrayerInMinutes = this._getTimeUntilNextPrayerInMinutes(nextTimeIndex);
+    const timeUntilNextPrayerInText = this._getTimeUntilNextPrayerInText(timeUntilNextPrayerInMinutes);
+
     prayerTimes[currentTimeKey].setCurrent(true);
-    prayerTimes[currentTimeKey].setTimeUntilNextPrayer(timeUntilNextPrayer);
+    prayerTimes[currentTimeKey].setTimeUntilNextPrayerInMinutes(timeUntilNextPrayerInMinutes);
+    prayerTimes[currentTimeKey].setTimeUntilNextPrayerInText(timeUntilNextPrayerInText);
 
     return prayerTimes;
   }
@@ -78,32 +86,37 @@ export default class PrayerTimeService {
       sunset.second() || sunset.millisecond()
         ? sunset.add(1, "minute").startOf("minute")
         : sunset.startOf("minute");
-    sunset = sunset.toDate();
 
-    let fajr = this._prayerTimes["fajr"];
-    let midnightOffset = (fajr.getTime() - sunset.getTime()) / 2;
-    let midnight = sunset.getTime() + midnightOffset;
+    let fajr = moment(this._prayerTimes["fajr"]).add(1, "days");
+    let midnightOffset = fajr.diff(sunset) / 2;
+    let midnight = sunset.add(midnightOffset, "milliseconds");
 
-    // console.log(sunset, fajr, new Date(midnight));
-
-    return moment(midnight).format("h:m A");
+    return midnight.toDate();
   }
 
-  _getTimeUntilNextPrayer(nextTimeIndex) {
+  _getTimeUntilNextPrayerInMinutes(nextTimeIndex) {
     let currentTime = moment(new Date());
-    let nextPrayerTime = moment(
-      this._prayerTimes[this._timeKeys[nextTimeIndex]]
-    );
+    let nextPrayerTime = moment(this._prayerTimes[this._timeKeys[nextTimeIndex]]);
+    let timeDifference = Math.ceil(nextPrayerTime.diff(currentTime, "minutes", true));
 
-    let timeDifference = nextPrayerTime.diff(currentTime, "minutes");
+    if (nextTimeIndex === 0 && timeDifference < 0) {
+      nextPrayerTime.add(1, "days");
+      timeDifference = Math.ceil(nextPrayerTime.diff(currentTime, "minutes", true));
+    }
+
+    return timeDifference;
+  }
+
+  _getTimeUntilNextPrayerInText(timeDifference) {
     let timeDifferenceInHours = parseInt(timeDifference / 60);
     let timeDifferenceInMinutes = timeDifference % 60;
     let timeUntilNextPrayer = [];
     if (timeDifferenceInHours > 0)
-      timeUntilNextPrayer.push(timeDifferenceInHours + " hours");
+      timeUntilNextPrayer.push(UtilService.pluralize(timeDifferenceInHours, "hour"));
     if (timeDifferenceInMinutes > 0)
-      timeUntilNextPrayer.push(timeDifferenceInMinutes + " minutes");
+      timeUntilNextPrayer.push(UtilService.pluralize(timeDifferenceInMinutes, "minute"));
 
     return timeUntilNextPrayer.join(" ");
   }
+
 }

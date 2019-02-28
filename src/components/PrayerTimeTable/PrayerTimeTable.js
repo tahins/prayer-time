@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import PrayerTimeRow from "./PrayerTimeRow.js";
 import PrayerTimeService from "../../Services/prayertime.service.js";
 import {
@@ -10,18 +10,34 @@ import {
   WiNightAltPartlyCloudy,
   WiNightClear
 } from "weather-icons-react";
-import CoordsContext from "../../CoordsContext";
 import AppConfig from "../../AppConfig.json";
 
 import "./PrayerTimeTable.css";
 
-function PrayerTimeTable() {
-  const coordsContext = useContext(CoordsContext);
+function PrayerTimeTable(props) {
+  if (!props.latitude || !props.longitude) return null;
 
-  const prayerTimeService = new PrayerTimeService(
-    coordsContext.coords.latitude,
-    coordsContext.coords.longitude
+  let prayerTimes = getUpdatedPrayerTimes(props.latitude, props.longitude);
+
+  // setInterval(() => {
+  //   setPrayerTimes(getUpdatedPrayerTimes(
+  //     coordsContext.coords.latitude,
+  //     coordsContext.coords.longitude
+  //   ));
+  //   console.log(prayerTimes);
+  // }, 100000);
+
+  return (
+    <ul id="prayerTimeTable">
+      {prayerTimes.map((prayerTime, index) => (
+        <PrayerTimeRow key={index} {...prayerTime} />
+      ))}
+    </ul>
   );
+}
+
+function getUpdatedPrayerTimes(latitude, longitude) {
+  const prayerTimeService = new PrayerTimeService(latitude, longitude);
   let prayerTimes = prayerTimeService.getPrayerTimes();
   let prayerTimesToShow = AppConfig.prayerTimesToShow.map((timeKey, index) => {
     let prayerTime = prayerTimes[timeKey];
@@ -29,13 +45,7 @@ function PrayerTimeTable() {
     return prayerTimes[timeKey];
   });
 
-  return (
-    <ul id="prayerTimeTable">
-      {prayerTimesToShow.map((prayerTime, index) => (
-        <PrayerTimeRow key={index} {...prayerTime} />
-      ))}
-    </ul>
-  );
+  return prayerTimesToShow;
 }
 
 function getPrayerTimeIcon(prayerTimeKey, size) {
