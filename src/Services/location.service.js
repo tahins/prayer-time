@@ -11,7 +11,7 @@ export default class LocationService {
     });
   }
 
-  getPosition() {
+  async getPosition() {
     const options = {
       enableHighAccuracy: true,
       timeout: 5000,
@@ -30,8 +30,8 @@ export default class LocationService {
     });
   }
 
-  getLocation() {
-    return fetch("https://geoip-db.com/json/")
+  async getPlace() {
+    return await fetch("https://geoip-db.com/json/")
       .then(response => response.json())
       .then(function (jsonResponse) {
         let location = {

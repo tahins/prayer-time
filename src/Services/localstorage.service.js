@@ -4,17 +4,22 @@ export default class LocalStorageService {
     static setPosition(position) {
         return LocalStorageService.set(AppConfig.storageKeys.position, position);
     }
-
     static getPosition() {
         return LocalStorageService.get(AppConfig.storageKeys.position);
     }
 
-    static setLocationName(locationName) {
-        return LocalStorageService.set(AppConfig.storageKeys.locationName, locationName);
+    static setPlace(Place) {
+        return LocalStorageService.set(AppConfig.storageKeys.place, Place);
+    }
+    static getPlace() {
+        return LocalStorageService.get(AppConfig.storageKeys.place);
     }
 
-    static getLocationName() {
-        return LocalStorageService.get(AppConfig.storageKeys.locationName);
+    static setSettings(settings) {
+        return LocalStorageService.set(AppConfig.storageKeys.settings, settings);
+    }
+    static getSettings() {
+        return LocalStorageService.get(AppConfig.storageKeys.settings);
     }
 
     static set(key, value) {

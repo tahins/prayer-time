@@ -11,6 +11,7 @@
     "storagePrefix": "prayertime",
     "storageKeys": {
         "position": "position",
-        "locationName": "locationName"
+        "place": "place",
+        "settings": "settings"
     }
 }
