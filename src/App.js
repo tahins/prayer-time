@@ -5,6 +5,7 @@ import LocationPermission from "./Components/LocationPermission/LocationPermissi
 import Settings from "./Components/Settings/Settings";
 import { PositionContextProvider, PositionContext } from "./Contexts/position.context";
 import { PlaceContextProvider } from "./Contexts/place.context";
+import { SettingsContextProvider } from "./Contexts/settings.context";
 
 import "./App.css";
 
@@ -12,7 +13,9 @@ function App() {
   return (
     <PositionContextProvider>
       <PlaceContextProvider>
-        <AppRouter />
+        <SettingsContextProvider>
+          <AppRouter />
+        </SettingsContextProvider>
       </PlaceContextProvider>
     </PositionContextProvider>
   );

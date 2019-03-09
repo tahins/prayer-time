@@ -24,7 +24,7 @@ export default class LocationService {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
         };
-        console.info("Position fetched", coords);
+        // console.info("Position fetched", coords);
         resolve(coords);
       }, reject, options);
     });
@@ -38,7 +38,7 @@ export default class LocationService {
           city: jsonResponse.city,
           country: jsonResponse.country_name
         };
-        console.info("Location fetched", location);
+        // console.info("Location fetched", location);
         return location;
       });
   }

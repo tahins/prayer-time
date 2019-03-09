@@ -15,11 +15,11 @@ export default class LocalStorageService {
         return LocalStorageService.get(AppConfig.storageKeys.place);
     }
 
-    static setSettings(settings) {
-        return LocalStorageService.set(AppConfig.storageKeys.settings, settings);
+    static setSelectedSettingsOptions(selectedSettingsOptions) {
+        return LocalStorageService.set(AppConfig.storageKeys.selectedSettingsOptions, selectedSettingsOptions);
     }
-    static getSettings() {
-        return LocalStorageService.get(AppConfig.storageKeys.settings);
+    static getSelectedSettingsOptions() {
+        return LocalStorageService.get(AppConfig.storageKeys.selectedSettingsOptions);
     }
 
     static set(key, value) {

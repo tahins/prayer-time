@@ -5,10 +5,10 @@ import UtilService from "../Services/util.service";
 import PrayerTime from "../Models/prayerTime.model";
 
 export default class PrayerTimeService {
-  constructor(latitude, longitude) {
+  constructor(latitude, longitude, calculationMethod, madhab) {
     this._date = new Date();
     this._coordinates = new Adhan.Coordinates(latitude, longitude);
-    this._params = this._getDefaultParams();
+    this._params = this._getParams(calculationMethod, madhab);
 
     this._prayerTimes = new Adhan.PrayerTimes(
       this._coordinates,
@@ -72,10 +72,68 @@ export default class PrayerTimeService {
     return prayerTimes;
   }
 
-  _getDefaultParams() {
-    let params = Adhan.CalculationMethod.UmmAlQura();
-    params.madhab = Adhan.Madhab.Shafi;
+  _getParams(calculationMethod, madhab) {
+    let params;
+    params = this._getCalculationMethodParam(calculationMethod);
+    params.madhab = this._getMadhabParam(madhab);
+
     return params;
+  }
+
+  _getCalculationMethodParam(calculationMethod) {
+    let param;
+    switch (calculationMethod) {
+      case "MuslimWorldLeague":
+        param = Adhan.CalculationMethod.MuslimWorldLeague();
+        break;
+      case "Egyptian":
+        param = Adhan.CalculationMethod.Egyptian();
+        break;
+      case "Karachi":
+        param = Adhan.CalculationMethod.Karachi();
+        break;
+      case "UmmAlQura":
+        param = Adhan.CalculationMethod.UmmAlQura();
+        break;
+      case "Dubai":
+        param = Adhan.CalculationMethod.Dubai();
+        break;
+      case "Qatar":
+        param = Adhan.CalculationMethod.Qatar();
+        break;
+      case "Kuwait":
+        param = Adhan.CalculationMethod.Kuwait();
+        break;
+      case "MoonsightingCommittee":
+        param = Adhan.CalculationMethod.MoonsightingCommittee();
+        break;
+      case "NorthAmerica":
+        param = Adhan.CalculationMethod.NorthAmerica();
+        break;
+
+      default:
+        param = Adhan.CalculationMethod.UmmAlQura();
+        break;
+    }
+    return param;
+  }
+
+  _getMadhabParam(madhab) {
+    let param;
+    switch (madhab) {
+      case "Shafi":
+        param = Adhan.Madhab.Shafi;
+        break;
+      case "Hanafi":
+        param = Adhan.Madhab.Hanafi;
+        break;
+
+      default:
+        param = Adhan.Madhab.Shafi;
+        break;
+    }
+
+    return param;
   }
 
   _getMidnight() {

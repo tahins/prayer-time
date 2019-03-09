@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import PrayerTimeRow from "./PrayerTimeRow.js";
 import PrayerTimeService from "../../Services/prayertime.service.js";
 import {
@@ -10,6 +10,7 @@ import {
   WiNightAltPartlyCloudy,
   WiNightClear
 } from "weather-icons-react";
+import { SettingsContext } from "../../Contexts/settings.context";
 import AppConfig from "../../AppConfig.json";
 
 import "./PrayerTimeTable.css";
@@ -17,7 +18,9 @@ import "./PrayerTimeTable.css";
 function PrayerTimeTable(props) {
   if (!props.latitude || !props.longitude) return null;
 
-  const getUpdatedPrayerTimes = getPrayerTimesToDisplay.bind(this, props.latitude, props.longitude);
+  const settingsContext = useContext(SettingsContext);
+  const getUpdatedPrayerTimes = getPrayerTimesToDisplay.bind(this, props.latitude, props.longitude,
+    settingsContext.selectedOptions.method.optionKey, settingsContext.selectedOptions.madhab.optionKey);
   const [prayerTimes, setPrayerTimes] = useState(
     getUpdatedPrayerTimes()
   );
@@ -47,8 +50,8 @@ function setupUpdatePrayerTimeInEveryMinute(getUpdatedPrayerTimes, setPrayerTime
   }, SECONDS_REMAINING_TILL_THIS_MINUTE);
 }
 
-function getPrayerTimesToDisplay(latitude, longitude) {
-  const prayerTimeService = new PrayerTimeService(latitude, longitude);
+function getPrayerTimesToDisplay(latitude, longitude, method, madhab) {
+  const prayerTimeService = new PrayerTimeService(latitude, longitude, method, madhab);
   let prayerTimes = prayerTimeService.getPrayerTimes();
   let prayerTimesToDisplay = AppConfig.prayerTimesToShow.map(timeKey => {
     let prayerTime = prayerTimes[timeKey];

@@ -15,7 +15,7 @@ function PrayerTime() {
   const coords = positionContext.coords;
 
   return (
-    <div className="App">
+    <div id="prayerTime">
       <SettingsIcon />
       <Calendar />
       <Place />

@@ -12,6 +12,6 @@
     "storageKeys": {
         "position": "position",
         "place": "place",
-        "settings": "settings"
+        "selectedSettingsOptions": "selectedSettingsOptions"
     }
 }
