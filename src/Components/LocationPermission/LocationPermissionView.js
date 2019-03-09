@@ -12,7 +12,7 @@ function LocationPermissionView(props) {
             <br />
             <button className="primary large shadow" onClick={props.getUserLocationAndPlace}>
                 <Icon icon={crosshair} size={16} />Share my location
-      </button>
+            </button>
         </div>
     );
 }

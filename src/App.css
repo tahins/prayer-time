@@ -12,5 +12,4 @@ body {
 .App {
   margin: auto;
   max-width: var(--app-max-width);
-  font-family: sans-serif;
 }

@@ -15,6 +15,7 @@
     "react-dom": "16.8.1",
     "react-icons-kit": "^1.2.1",
     "react-router-component": "^0.39.1",
+    "react-router-dom": "^4.3.1",
     "react-scripts": "2.0.3",
     "sunrise-sunset-js": "2.0.0",
     "weather-icons-react": "latest"

@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Ubuntu');
+
+body, input, textarea, select, button {
+    font-family: 'Ubuntu', sans-serif;
+}
+
 button {
     outline: none;
     cursor: pointer;

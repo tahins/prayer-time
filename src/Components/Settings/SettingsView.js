@@ -7,7 +7,7 @@ import { home } from 'react-icons-kit/feather/home';
 import "./Settings.css";
 
 function SettingsView(props) {
-    
+
     return (
         <div id="settings">
             <Link href="/" className="settings-icon pull-right">
@@ -35,6 +35,8 @@ function SettingsView(props) {
 
                 </div>
             ))}
+            <small>Design credit <a target="_blank" rel="noopener noreferrer"
+                href="https://dribbble.com/shots/2743209-Prayer-Time-App">Fimpli</a></small>
         </div>
     );
 }

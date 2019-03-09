@@ -27,15 +27,13 @@ function AppRouter() {
   const routerRef = React.createRef();
   const positionContext = useContext(PositionContext);
   const isCoordsSet = positionContext.isCoordsSet();
+  const baseUrl = process.env.PUBLIC_URL;
 
   return (
     <div className="App">
       <Locations ref={routerRef}>
-        {!isCoordsSet ?
-          <Location path="/" handler={LocationPermission} /> :
-          <Location path="/" handler={PrayerTime} />
-        }
-        <Location path="/settings" handler={Settings} />
+        <Location path={baseUrl + "/"} handler={isCoordsSet ? PrayerTime : LocationPermission} />
+        <Location path={baseUrl + "/settings"} handler={Settings} />
         <NotFound handler={LocationPermission} />
       </Locations>
     </div>
