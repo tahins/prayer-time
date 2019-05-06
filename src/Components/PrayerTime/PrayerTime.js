@@ -3,6 +3,7 @@ import { Link } from "react-router-component";
 import moment from "moment";
 import HijrahDate from "hijrah-date";
 import PrayerTimeTable from "../PrayerTimeTable/PrayerTimeTable";
+import UtilService from "../../Services/util.service";
 import { PositionContext } from "../../Contexts/position.context";
 import { PlaceContext } from "../../Contexts/place.context";
 
@@ -13,10 +14,11 @@ import "./PrayerTime.css";
 function PrayerTime() {
   const positionContext = useContext(PositionContext);
   const coords = positionContext.coords;
+  const settingsUrl = UtilService.getBaseUrl() + "/settings";
 
   return (
     <div id="prayerTime">
-      <SettingsIcon />
+      <SettingsIcon settingsUrl={settingsUrl} />
       <Calendar />
       <Place />
       <br />
@@ -27,8 +29,8 @@ function PrayerTime() {
 
 export default PrayerTime;
 
-const SettingsIcon = () => (
-  <Link href="/settings" className="settings-icon pull-right">
+const SettingsIcon = props => (
+  <Link href={props.settingsUrl} className="settings-icon pull-right">
     <Icon icon={settings} size={32} />
   </Link>
 );

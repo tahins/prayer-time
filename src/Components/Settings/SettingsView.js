@@ -10,7 +10,7 @@ function SettingsView(props) {
 
     return (
         <div id="settings">
-            <Link href="/" className="settings-icon pull-right">
+            <Link href={props.homepageUrl} className="settings-icon pull-right">
                 <Icon icon={home} size={32} />
             </Link>
             <h1>Settings</h1>

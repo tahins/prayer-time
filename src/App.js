@@ -3,6 +3,7 @@ import { Locations, Location, NotFound } from 'react-router-component';
 import PrayerTime from "./Components/PrayerTime/PrayerTime";
 import LocationPermission from "./Components/LocationPermission/LocationPermission";
 import Settings from "./Components/Settings/Settings";
+import UtilService from "./Services/util.service";
 import { PositionContextProvider, PositionContext } from "./Contexts/position.context";
 import { PlaceContextProvider } from "./Contexts/place.context";
 import { SettingsContextProvider } from "./Contexts/settings.context";
@@ -27,7 +28,7 @@ function AppRouter() {
   const routerRef = React.createRef();
   const positionContext = useContext(PositionContext);
   const isCoordsSet = positionContext.isCoordsSet();
-  const baseUrl = process.env.PUBLIC_URL;
+  const baseUrl = UtilService.getBaseUrl();
 
   return (
     <div className="App">

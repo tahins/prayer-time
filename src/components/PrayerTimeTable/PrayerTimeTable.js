@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import PrayerTimeRow from "./PrayerTimeRow.js";
 import PrayerTimeService from "../../Services/prayertime.service.js";
 import {
@@ -25,7 +25,15 @@ function PrayerTimeTable(props) {
     getUpdatedPrayerTimes()
   );
 
-  setupUpdatePrayerTimeInEveryMinute(getUpdatedPrayerTimes, setPrayerTimes);
+  useEffect(() => {
+    const [prayerTimeTimeout, prayerTimeInterval] =
+      setupUpdatePrayerTimeInEveryMinute(getUpdatedPrayerTimes, setPrayerTimes);
+
+    return () => {
+      clearTimeout(prayerTimeTimeout);
+      clearInterval(prayerTimeInterval);
+    };
+  });
 
   return (
     <ul id="prayerTimeTable">
@@ -41,13 +49,16 @@ function setupUpdatePrayerTimeInEveryMinute(getUpdatedPrayerTimes, setPrayerTime
   const SECONDS_REMAINING_TILL_THIS_MINUTE = (60 - now.getSeconds()) * 1000;
   const ONE_SECOND = 60 * 1000;
 
-  setTimeout(() => {
+  let prayerTimeTimeout, prayerTimeInterval;
+  prayerTimeTimeout = setTimeout(() => {
     setPrayerTimes(getUpdatedPrayerTimes());
 
-    setInterval(() => {
+    prayerTimeInterval = setInterval(() => {
       setPrayerTimes(getUpdatedPrayerTimes());
     }, ONE_SECOND);
   }, SECONDS_REMAINING_TILL_THIS_MINUTE);
+
+  return [prayerTimeTimeout, prayerTimeInterval];
 }
 
 function getPrayerTimesToDisplay(latitude, longitude, method, madhab) {

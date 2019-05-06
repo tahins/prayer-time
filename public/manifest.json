@@ -1,11 +1,21 @@
 {
   "short_name": "Prayer Time",
-  "name": "Find prayer time in your city",
+  "name": "Prayer time in your city",
   "icons": [
     {
-      "src": "favicon.png",
+      "src": "/icons/favicon.png",
       "sizes": "144x144 64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
   "start_url": ".",

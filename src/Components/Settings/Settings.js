@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import UtilService from "../../Services/util.service";
 import { SettingsContext } from "../../Contexts/settings.context";
 import SettingsView from "./SettingsView";
 
@@ -7,6 +8,7 @@ import defaultSettingsData from "./SettingsData.json";
 function Settings() {
     let settingsKeys = Object.keys(defaultSettingsData);
     const settingsContext = useContext(SettingsContext);
+    const homepageUrl = UtilService.getBaseUrl() + "/";
 
     const selectionHandler = (settingsKey, selectedKey) => {
         let selectedOptions = { ...settingsContext.selectedOptions };
@@ -18,6 +20,7 @@ function Settings() {
     };
 
     return <SettingsView
+        homepageUrl={homepageUrl}
         settingsData={defaultSettingsData}
         settingsKeys={settingsKeys}
         selectedOptions={settingsContext.selectedOptions}
