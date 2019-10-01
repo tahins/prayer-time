@@ -5,8 +5,14 @@
 }
 
 body {
-  padding: 20px;
+  padding: 0px;
+  margin: 0px;
   background-color: var(--main-bg-color);
+}
+
+
+.full-width {
+  width: 100%;
 }
 
 .App {

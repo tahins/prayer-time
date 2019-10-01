@@ -36,7 +36,7 @@ function PrayerTimeTable(props) {
   });
 
   return (
-    <ul id="prayerTimeTable">
+    <ul id="prayerTimeTable" className="full-width">
       {prayerTimes.map((prayerTime, index) => (
         <PrayerTimeRow key={index} {...prayerTime} />
       ))}

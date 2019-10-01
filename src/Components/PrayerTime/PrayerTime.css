@@ -2,6 +2,19 @@
   --secondary-text-color: #828282;
 }
 
+.flex-center { 
+  display: flex; 
+  align-items: center;
+}
+
+.information-container {
+  height: 15vh;  
+}
+
+.timetable-container {
+  height: 80vh;
+}
+
 .settings-icon {
   color: var(--secondary-text-color);
 }

@@ -18,11 +18,16 @@ function PrayerTime() {
 
   return (
     <div id="prayerTime">
-      <SettingsIcon settingsUrl={settingsUrl} />
-      <Calendar />
-      <Place />
-      <br />
-      <PrayerTimeTable latitude={coords.latitude} longitude={coords.longitude} />
+      <div className="flex-center information-container">
+      <div className="full-width datetime-information">
+        <SettingsIcon settingsUrl={settingsUrl} />
+        <Calendar />
+        <Place />
+      </div>
+      </div>
+      <div className="flex-center timetable-container">
+        <PrayerTimeTable latitude={coords.latitude} longitude={coords.longitude} />
+      </div>
     </div>
   );
 }
