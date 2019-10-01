@@ -1,4 +1,6 @@
-#settings {}
+#settings {
+    margin: 30px;
+}
 
 #settings .block {
     border-bottom: 1px solid var(--prayerTime-border-color);

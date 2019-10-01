@@ -2,6 +2,10 @@
   --secondary-text-color: #828282;
 }
 
+#prayerTime {
+  margin: 0 30px;
+}
+
 .flex-center { 
   display: flex; 
   align-items: center;
@@ -22,6 +26,7 @@
 #location {
   color: var(--secondary-text-color);
   font-size: 14px;
+  margin-top: 0.7vh;
 }
 
 .update-location {
