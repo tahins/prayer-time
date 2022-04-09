@@ -12,7 +12,7 @@
     "caniuse-lite": "^1.0.30000966",
     "geolocator": "2.1.5",
     "hijrah-date": "1.0.3",
-    "moment": "2.24.0",
+    "moment": "2.29.2",
     "react": "16.8.1",
     "react-dom": "16.8.1",
     "react-icons-kit": "^1.2.1",
